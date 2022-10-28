@@ -1,5 +1,7 @@
 package br.com.alura.comex.entities;
 
+import br.com.alura.comex.entities.enums.StatusCategoria;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

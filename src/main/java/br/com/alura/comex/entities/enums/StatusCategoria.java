@@ -1,4 +1,4 @@
-package br.com.alura.comex.entities;
+package br.com.alura.comex.entities.enums;
 
 public enum StatusCategoria {
     ATIVA, INATIVA;

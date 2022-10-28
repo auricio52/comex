@@ -1,5 +1,7 @@
 package br.com.alura.comex.entities;
 
+import br.com.alura.comex.entities.enums.TipoDesconto;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

@@ -1,5 +1,9 @@
 package br.com.alura.comex.entities;
 
+import br.com.alura.comex.entities.Pedido;
+import br.com.alura.comex.entities.Produto;
+import br.com.alura.comex.entities.enums.TipoDescontoItem;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
