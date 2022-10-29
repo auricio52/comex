@@ -1,6 +1,7 @@
 package br.com.alura.comex.entities;
 
 import br.com.alura.comex.entities.enums.StatusCategoria;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.ArrayList;
