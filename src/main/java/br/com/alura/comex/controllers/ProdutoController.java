@@ -7,6 +7,7 @@ import br.com.alura.comex.entities.Categoria;
 import br.com.alura.comex.entities.Produto;
 import br.com.alura.comex.repositories.CategoriaRepository;
 import br.com.alura.comex.repositories.ProdutoRepository;
+import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -14,7 +15,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -26,6 +29,17 @@ public class ProdutoController {
     public ProdutoController(ProdutoRepository produtoRepository, CategoriaRepository categoriaRepository) {
         this.produtoRepository = produtoRepository;
         this.categoriaRepository = categoriaRepository;
+    }
+
+    @GetMapping
+    public Page<ProdutoDtoOutput> listarTodos(Integer pagina) {
+        if (pagina == null) {
+            pagina = 0;
+        }
+        Pageable pageable = PageRequest.of(pagina, 5, Sort.by(Sort.Direction.ASC, "nome"));
+        Page<Produto> paginaProdutos = produtoRepository.findAll(pageable);
+        List<ProdutoDtoOutput> produtos = paginaProdutos.get().map(ProdutoMapper::toProdutoDtoOutput).collect(Collectors.toList());
+        return new PageImpl<>(produtos, pageable, produtos.size());
     }
 
     @PostMapping
