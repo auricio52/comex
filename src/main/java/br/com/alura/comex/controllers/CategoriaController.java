@@ -6,6 +6,7 @@ import br.com.alura.comex.controllers.dtos.CategoriaDtoOutput;
 import br.com.alura.comex.controllers.mappers.CategoriaMapper;
 import br.com.alura.comex.entities.Categoria;
 import br.com.alura.comex.repositories.CategoriaRepository;
+import br.com.alura.comex.repositories.projections.CategoriaProjection;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -59,6 +60,13 @@ public class CategoriaController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/pedidos")
+    public List<CategoriaProjection> buscarRelatorio() {
+        List<CategoriaProjection> categorias = categoriaRepository.findCategoriaRelatorio();
+
+        return categorias;
     }
 
     @PutMapping("/{id}")
