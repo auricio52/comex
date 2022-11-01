@@ -7,7 +7,10 @@ import br.com.alura.comex.entities.Categoria;
 import br.com.alura.comex.entities.Produto;
 import br.com.alura.comex.repositories.CategoriaRepository;
 import br.com.alura.comex.repositories.ProdutoRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.*;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -16,7 +19,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -32,29 +34,21 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public Page<ProdutoDtoOutput> listarTodos(Integer pagina) {
-        if (pagina == null) {
-            pagina = 0;
-        }
-        Pageable pageable = PageRequest.of(pagina, 5, Sort.by(Sort.Direction.ASC, "nome"));
+    public Page<ProdutoDtoOutput> listarTodos(@PageableDefault(sort = "nome", direction = Sort.Direction.ASC, size = 5) Pageable pageable) {
         Page<Produto> paginaProdutos = produtoRepository.findAll(pageable);
         List<ProdutoDtoOutput> produtos = paginaProdutos.get().map(ProdutoMapper::toProdutoDtoOutput).collect(Collectors.toList());
         return new PageImpl<>(produtos, pageable, produtos.size());
     }
 
     @PostMapping
+    @CacheEvict(value = "relatoriosPedidos", allEntries = true)
     @Transactional
     public ResponseEntity<ProdutoDtoOutput> salvar(@RequestBody @Valid ProdutoDtoInput produtoDtoInput, UriComponentsBuilder uriBuilder) {
-        Optional<Categoria> optional = categoriaRepository.findById(produtoDtoInput.getIdCategoria());
+        Categoria categoria = categoriaRepository.findById(produtoDtoInput.getIdCategoria()).orElseThrow(() -> new EmptyResultDataAccessException(1));
         Produto produto = ProdutoMapper.fromProdutoDtoInput(produtoDtoInput);
-
-        if (optional.isPresent()) {
-            produto.setCategoria(optional.get());
-            Produto produtoSalvo = produtoRepository.save(produto);
-            URI uri = uriBuilder.path("/api/produtos/{id}").buildAndExpand(produtoSalvo.getId()).toUri();
-            return ResponseEntity.created(uri).body(ProdutoMapper.toProdutoDtoOutput(produtoSalvo));
-        }
-
-        return ResponseEntity.notFound().build();
+        produto.setCategoria(categoria);
+        Produto produtoSalvo = produtoRepository.save(produto);
+        URI uri = uriBuilder.path("/api/produtos/{id}").buildAndExpand(produtoSalvo.getId()).toUri();
+        return ResponseEntity.created(uri).body(ProdutoMapper.toProdutoDtoOutput(produtoSalvo));
     }
 }
