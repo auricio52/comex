@@ -63,8 +63,7 @@ public class CategoriaController {
     @GetMapping("/pedidos")
     @Cacheable(value = "relatoriosPedidos")
     public List<CategoriaProjection> buscarRelatorio() {
-        List<CategoriaProjection> categorias = categoriaRepository.findCategoriaRelatorio();
-        return categorias;
+        return categoriaRepository.findCategoriaRelatorio();
     }
 
     @PutMapping("/{id}")

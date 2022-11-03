@@ -18,8 +18,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -36,8 +34,7 @@ public class ProdutoController {
     @GetMapping
     public Page<ProdutoDtoOutput> listarTodos(@PageableDefault(sort = "nome", direction = Sort.Direction.ASC, size = 5) Pageable pageable) {
         Page<Produto> paginaProdutos = produtoRepository.findAll(pageable);
-        List<ProdutoDtoOutput> produtos = paginaProdutos.get().map(ProdutoMapper::toProdutoDtoOutput).collect(Collectors.toList());
-        return new PageImpl<>(produtos, pageable, produtos.size());
+        return paginaProdutos.map(ProdutoMapper::toProdutoDtoOutput);
     }
 
     @PostMapping
