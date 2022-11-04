@@ -1,6 +1,5 @@
 package br.com.alura.comex.services;
 
-import br.com.alura.comex.entities.Usuario;
 import br.com.alura.comex.repositories.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,8 +17,6 @@ public class AutenticacaoService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = this.usuarioRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User does not exists!"));
-
-        return usuario;
+        return this.usuarioRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User does not exists!"));
     }
 }
