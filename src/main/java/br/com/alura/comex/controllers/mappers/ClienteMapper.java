@@ -1,5 +1,6 @@
 package br.com.alura.comex.controllers.mappers;
 
+import br.com.alura.comex.controllers.dtos.ClienteDtoInput;
 import br.com.alura.comex.controllers.dtos.ClienteDtoOutput;
 import br.com.alura.comex.entities.Cliente;
 
@@ -10,7 +11,6 @@ public class ClienteMapper {
         dto.setBairro(cliente.getBairro());
         dto.setCidade(cliente.getCidade());
         dto.setCpf(cliente.getCpf());
-        dto.setEmail(cliente.getUsuario().getEmail());
         dto.setComplemento(cliente.getComplemento());
         dto.setNome(cliente.getNome());
         dto.setNumero(cliente.getNumero());
@@ -18,5 +18,19 @@ public class ClienteMapper {
         dto.setRua(cliente.getRua());
         dto.setTelefone(cliente.getTelefone());
         return dto;
+    }
+
+    public static Cliente fromClienteDtoInput(ClienteDtoInput clienteDtoInput) {
+        Cliente cliente = new Cliente();
+        cliente.setBairro(clienteDtoInput.getBairro());
+        cliente.setCidade(clienteDtoInput.getCidade());
+        cliente.setCpf(clienteDtoInput.getCpf());
+        cliente.setComplemento(clienteDtoInput.getComplemento());
+        cliente.setNome(clienteDtoInput.getNome());
+        cliente.setNumero(clienteDtoInput.getNumero());
+        cliente.setEstado(clienteDtoInput.getEstado());
+        cliente.setRua(clienteDtoInput.getRua());
+        cliente.setTelefone(clienteDtoInput.getTelefone());
+        return cliente;
     }
 }
